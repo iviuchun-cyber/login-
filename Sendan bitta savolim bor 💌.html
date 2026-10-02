@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sendan bitta savolim bor 💌</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg1:#2a1245;--bg2:#5a1f5e;--rose:#ff5d8f;--peach:#ffd1c1;--ink:#fff3f6;--soft:#e9c9e6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root:not([data-theme="light"]){color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg1:#1c0b30;--bg2:#4a174f}}
+:root[data-theme="dark"]{--bg1:#1c0b30;--bg2:#4a174f}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:radial-gradient(120% 90% at 50% 0%,var(--bg2),var(--bg1));color:var(--ink);
+font-family:'Nunito',system-ui,sans-serif;display:flex;align-items:center;justify-content:center;overflow:hidden;text-align:center}
+.card{max-width:520px;padding:28px 24px;position:relative;z-index:2}
+.moon{width:84px;height:84px;margin:0 auto 22px;border-radius:50%;
+background:radial-gradient(circle at 35% 35%,#fff,var(--peach) 60%,#f5a8b8);box-shadow:0 0 60px 10px rgba(255,150,190,.45);animation:glow 4s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 90px 20px rgba(255,150,190,.65)}}
+h1{font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:600;font-size:clamp(34px,8vw,56px);line-height:1.1;margin:0 0 12px}
+p{color:var(--soft);font-size:18px;line-height:1.5;margin:0 0 30px}
+.btns{display:flex;gap:16px;justify-content:center;align-items:center;min-height:70px}
+button{font:700 18px 'Nunito',system-ui,sans-serif;border:0;border-radius:999px;padding:14px 30px;cursor:pointer;transition:transform .15s}
+button:focus-visible{outline:3px solid var(--peach);outline-offset:3px}
+#yes{background:var(--rose);color:#fff;box-shadow:0 8px 28px rgba(255,93,143,.5)}
+#yes:hover{transform:scale(1.06)}
+#no{background:transparent;color:var(--soft);border:2px solid var(--soft);transition:left .25s ease,top .25s ease}
+#msg{min-height:24px;margin-top:22px;font-size:15px;color:var(--peach)}
+.win{display:none}
+.win h1{font-size:clamp(36px,9vw,64px)}
+.heart{position:fixed;bottom:-40px;z-index:1;pointer-events:none;animation:up linear forwards}
+@keyframes up{to{transform:translateY(-115vh) rotate(25deg);opacity:0}}
+@media (prefers-reduced-motion:reduce){.moon{animation:none}.heart{display:none}}
+</style>
+</head>
+<body>
+<main class="card" id="ask">
+  <div class="moon" aria-hidden="true"></div>
+  <h1>Sendan bitta savolim bor…</h1>
+  <p>Faqat rost javob ber, xo'pmi?</p>
+  <h1 style="font-size:clamp(28px,6.5vw,44px)">Meni sevasanmi? 💗</h1>
+  <div class="btns">
+    <button id="yes">Ha, sevaman</button>
+    <button id="no">Yo'q</button>
+  </div>
+  <div id="msg" aria-live="polite"></div>
+</main>
+
+<main class="card win" id="win">
+  <div class="moon" aria-hidden="true"></div>
+  <h1>Bilardim! 🥰</h1>
+  <p>Men ham seni sevaman 💗</p>
+  <p style="font-family:'Fraunces',Georgia,serif;font-style:italic;font-size:22px;color:var(--peach);max-width:420px;margin:0 auto">«Dunyo katta, lekin yuragim har safar seni tanlaydi.»</p>
+</main>
+
+<script>
+const yes=document.getElementById('yes'),no=document.getElementById('no'),msg=document.getElementById('msg');
+const lines=["Ey, qayoqqa?","Bosib bo'lmaydi 😏","Yana urinib ko'r…","Ha deyaver, baribir 💗","Qo'lingdan kelmaydi!","Tugmaning ham sening yoningda emas 😂","Charchamadingmi?"];
+let tries=0,scale=1;
+function dodge(e){
+  if(e&&e.cancelable)e.preventDefault();
+  tries++;
+  const r=no.getBoundingClientRect(),w=r.width,h=r.height,y=yes.getBoundingClientRect();
+  no.style.position='fixed';
+  let x,t,k=0;
+  do{
+    x=16+Math.random()*(innerWidth-w-32);
+    t=16+Math.random()*(innerHeight-h-32);
+    k++;
+  }while(k<30&&x<y.right+20&&x+w>y.left-20&&t<y.bottom+20&&t+h>y.top-20);
+  no.style.left=x+'px';no.style.top=t+'px';
+  msg.textContent=lines[(tries-1)%lines.length];
+  scale=Math.min(1.9,scale+0.08);
+  yes.style.transform='scale('+scale+')';
+}
+['pointerenter','pointerdown','touchstart','click','focus'].forEach(ev=>no.addEventListener(ev,dodge,{passive:false}));
+yes.addEventListener('click',()=>{
+  document.getElementById('ask').style.display='none';
+  document.getElementById('win').style.display='block';
+  no.style.display='none';
+  setInterval(()=>{
+    const h=document.createElement('div');
+    h.className='heart';h.textContent=['💗','💖','💕','💘'][Math.floor(Math.random()*4)];
+    h.style.left=Math.random()*100+'vw';h.style.fontSize=(18+Math.random()*30)+'px';
+    h.style.animationDuration=(4+Math.random()*4)+'s';
+    document.body.appendChild(h);setTimeout(()=>h.remove(),8500);
+  },180);
+});
+</script>
+</body>
+</html>
